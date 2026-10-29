@@ -1,0 +1,54 @@
+# Stockly local infrastructure (development only).
+# NEVER use these credentials in production. Rotated by ops only.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: stockly-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: stockly
+      POSTGRES_USER: stockly
+      POSTGRES_PASSWORD: stockly_dev
+      # Enforce UTF-8 for es-CO collation.
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C.UTF-8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - stockly-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U stockly -d stockly"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    container_name: stockly-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - stockly-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+volumes:
+  postgres_data:
+    name: stockly_postgres_data
+  redis_data:
+    name: stockly_redis_data
+
+networks:
+  stockly-net:
+    name: stockly-net
+    driver: bridge

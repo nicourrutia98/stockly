@@ -1,0 +1,89 @@
+/* Stockly — minimal CSS reset + font fallbacks.
+ * T8 will introduce the Mantine theme + color scheme manager.
+ * For T1 we keep this intentionally small: only what the landing page needs.
+ */
+
+/*
+ * A11y: Mantine's default `dimmed` (gray-6, #868E96) is 3.32:1 on white,
+ * below WCAG AA 4.5:1 for body text. Bump it to gray-7 (#495057, ~7:1).
+ * Doubled `:root` raises specificity above Mantine's scheme selector so the
+ * override wins regardless of CSS import order.
+ */
+:root:root[data-mantine-color-scheme='light'] {
+  --mantine-color-dimmed: var(--mantine-color-gray-7);
+}
+
+/* Mantine Notification descriptions hardcode gray-6 when a title is present
+ * (3.32:1 on white). The hashed class is version-specific; the semantic
+ * `mantine-Notification-description` class is the stable hook. */
+.mantine-Notification-description[data-with-title] {
+  color: var(--mantine-color-gray-7);
+}
+
+:root {
+  /* Brand tokens (mirror of BRANDING.md). */
+  --color-primary-500: #0F4C81;
+  --color-primary-400: #1E5AA8;
+  --color-primary-600: #0A3B66;
+  --color-accent-500: #F5B700;
+  --color-gray-50: #F8FAFC;
+  --color-gray-100: #F1F5F9;
+  --color-gray-200: #E2E8F0;
+  --color-gray-500: #64748B;
+  --color-gray-700: #334155;
+  --color-gray-900: #0F172A;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-gray-50);
+  color: var(--color-gray-900);
+  font-family: var(--font-inter), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  line-height: 1.5;
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-jetbrains-mono), ui-monospace, 'JetBrains Mono', monospace;
+}
+
+a {
+  color: var(--color-primary-500);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--color-primary-400);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.stockly-skip-link:focus-visible {
+  left: 0.5rem;
+  top: 0.5rem;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}

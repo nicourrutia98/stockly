@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    0002 — Secondary indices for the `products` table.
+
+    Why these indices:
+        idx_products_category   — speeds up "products by category" queries
+                                   (T5 list endpoint with ?category=...).
+        idx_products_active     — speeds up "all active products" queries
+                                   (T5 default list, soft-delete filter).
+        idx_products_category_active — composite for the common
+                                   "active products in category X" pattern
+                                   (covered by either column alone; the
+                                   composite handles queries that filter
+                                   on both simultaneously).
+
+    Why the sku index is NOT here:
+        The UNIQUE constraint added in 0003 creates a backing index on
+        (sku) implicitly. Adding a duplicate here would be redundant.
+
+    Why CONCURRENTLY is NOT used:
+        CREATE INDEX CONCURRENTLY cannot run inside a Liquibase transaction
+        on PostgreSQL. Indices on a fresh table during initial migration
+        are cheap and do not need the lock-avoidance trick. Future migrations
+        on a hot table may use the sqlFile / raw-SQL pattern for that.
+-->
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="0002-product-indices" author="stockly">
+        <comment>Secondary indices for category, active, and the composite filter.</comment>
+
+        <createIndex tableName="products" indexName="idx_products_category">
+            <column name="category"/>
+        </createIndex>
+
+        <createIndex tableName="products" indexName="idx_products_active">
+            <column name="active"/>
+        </createIndex>
+
+        <createIndex tableName="products" indexName="idx_products_category_active">
+            <column name="category"/>
+            <column name="active"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex tableName="products" indexName="idx_products_category_active"/>
+            <dropIndex tableName="products" indexName="idx_products_active"/>
+            <dropIndex tableName="products" indexName="idx_products_category"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

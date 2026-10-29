@@ -1,0 +1,39 @@
+# =============================================================================
+# Liquibase master changelog — Stockly backend.
+#
+# Changelog history:
+#   - 0001-create-products-table   Schema for the product aggregate.
+#   - 0002-product-indices         Backing indices for non-unique filter columns.
+#   - 0003-product-constraints     UNIQUE on sku + CHECK constraints (price,
+#                                  stock, sku format).
+#   - 0004-create-users-table      Schema for the auth user aggregate (T6).
+#   - 0005-users-indices           Case-insensitive email index + createdAt.
+#
+# Future changelogs will be appended below in the form:
+#   - 0006-…-seed-admin.xml
+#   ...
+#
+# NOTE: Liquibase runs at startup BEFORE Hibernate validates the schema.
+# Hibernate runs with `ddl-auto=validate` (dev + prod), so it only verifies
+# that entities and columns agree. Liquibase is the source of truth.
+# =============================================================================
+
+databaseChangeLog:
+  - include:
+      file: 0001-create-products-table.xml
+      relativeToChangelogFile: true
+  - include:
+      file: 0002-product-indices.xml
+      relativeToChangelogFile: true
+  - include:
+      file: 0003-product-constraints.xml
+      relativeToChangelogFile: true
+  - include:
+      file: 0004-create-users-table.xml
+      relativeToChangelogFile: true
+  - include:
+      file: 0005-users-indices.xml
+      relativeToChangelogFile: true
+  - include:
+      file: 0006-users-id-identity.xml
+      relativeToChangelogFile: true

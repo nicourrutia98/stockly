@@ -1,0 +1,269 @@
+# Stockly — Continuous Integration (B-01)
+#
+# Primera publicación del proyecto en GitHub (2026-10-29). Hasta esa fecha el
+# proyecto no estaba en un repositorio, así que este workflow nunca se había
+# ejecutado: los pasos se validaron primero a mano en local (pnpm build,
+# mvn verify, suite E2E de 46 pruebas) y después contra la corrida real.
+#
+# Dos huecos se corrigieron antes de la primera corrida, ambos verificados en
+# local antes de subir:
+#   - el job 'frontend' compila @stockly/shared antes del typecheck y del build
+#     (el paquete se consume desde dist/: sin recompilarlo el build falla);
+#   - el job 'e2e' crea el admin de pruebas: no hay seed versionado del usuario
+#     admin (Liquibase solo crea el esquema), así que el login fallaría.
+#
+# Cierra la brecha B-01 de docs/04-estado-y-brechas.md: sin esto, las compuertas
+# de calidad (JaCoCo, PIT, auditoría de dependencias) son configuración muerta.
+#
+# Auditoría de dependencias en docs/06-seguridad-dependencias.md.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancela corridas anteriores del mismo ref: no se gasta tiempo en commits obsoletos.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # El backend lee su configuración de este bloque vía variable de entorno.
+  # `spring.config.import` carga apps/backend/.env si existe; en CI no existe y
+  # se usan estos valores (mismos que .env.example).
+  DATABASE_URL: jdbc:postgresql://localhost:5432/stockly
+  DATABASE_USERNAME: stockly
+  DATABASE_PASSWORD: stockly_dev
+  REDIS_HOST: localhost
+  REDIS_PORT: 6379
+  # Sustituir por un secreto antes de ejecutar esto de verdad.
+  JWT_SECRET: ci-only-secret-change-me-min-256-bits-long-enough-for-hs256
+  SPRING_PROFILES_ACTIVE: dev
+
+jobs:
+  # ---------------------------------------------------------------- frontend
+  frontend:
+    name: Frontend — tipos, pruebas, build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      # .npmrc (auto-install-peers=false) se respeta: no instalar peers implícitos.
+      # La instalación va desde la raíz: el paquete compartido es parte del
+      # workspace y su dist/ lo consume el frontend.
+      - name: Instalar dependencias
+        working-directory: .
+        run: pnpm install --frozen-lockfile
+
+      # El paquete compartido se consume desde dist/. Sin recompilarlo, el
+      # typecheck y el build del frontend compilan contra tipos que no existen.
+      - name: Compilar paquete compartido
+        working-directory: packages/shared
+        run: pnpm build
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Pruebas unitarias
+        run: pnpm vitest run --reporter=default
+
+      - name: Build
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8080/api/v1
+          NEXT_PUBLIC_DEFAULT_LOCALE: es-CO
+          NEXT_PUBLIC_DEFAULT_CURRENCY: COP
+          NEXT_PUBLIC_APP_VERSION: 0.1.0
+
+  # --------------------------------------------------------------- seguridad
+  security:
+    name: Seguridad — auditoría de dependencias
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Umbral en 'high': el aviso 'braces' sin parche (documentado y aceptado en
+      # docs/06-seguridad-dependencias.md §4) es 'high' y haría fallar 'moderate'
+      # en cada corrida. Subir a 'critical' solo si desaparece el parche upstream.
+      - name: pnpm audit (falla si hay crítica o alta)
+        run: pnpm audit --audit-level=high
+
+  # ------------------------------------------------------------------ backend
+  # Hoy NO hay pruebas de backend (B-02): src/test no existe. Este job existe para
+  # levantar el backend y alimentar los E2E, y para dejar las compuertas JaCoCo y
+  # PIT en su sitio. Cuando se escriban las pruebas, añadir 'mvn verify'.
+  backend:
+    name: Backend — compilar
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # El paquete compartido se transpila con tsc y el backend la importa por
+      # contratos; ver RK-04 en docs/04-estado-y-brechas.md.
+      - name: Compilar paquete compartido
+        working-directory: packages/shared
+        run: pnpm build
+
+      # Sin -DskipTests: si mañana aparecen pruebas, esta compilación debe
+      # ejecutarlas. Hoy compila cero, que es exactamente B-02.
+      - name: Compilar backend
+        run: mvn -B verify
+
+  # ---------------------------------------------------------------------- e2e
+  e2e:
+    name: E2E — Playwright
+    runs-on: ubuntu-latest
+    needs: [frontend, backend]
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: stockly
+          POSTGRES_USER: stockly
+          POSTGRES_PASSWORD: stockly_dev
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U stockly -d stockly"
+          --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Compilar paquete compartido
+        working-directory: packages/shared
+        run: pnpm build
+
+      - run: pnpm install --frozen-lockfile
+        working-directory: .
+
+      - name: Arrancar backend
+        working-directory: apps/backend
+        run: |
+          nohup mvn -B spring-boot:run > /tmp/backend.log 2>&1 &
+          # /actuator/health es la única señal fiable: el proceso muere si el
+          # esquema no valida o si la conexión a Postgres/Redis falla.
+          for i in $(seq 1 60); do
+            if curl -fsS http://localhost:8080/actuator/health | grep -q '"UP"'; then
+              echo "backend listo en ${i}0s"; exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::el backend no respondió /actuator/health"
+          tail -50 /tmp/backend.log
+          exit 1
+
+      # El admin de pruebas NO está versionado como seed (Liquibase solo crea
+      # el esquema). Se registra por la API real —que es la que hashea la
+      # contraseña— y se promueve a ROLE_ADMIN por SQL, porque no existe un
+      # endpoint de administración de usuarios. Mismo procedimiento que el
+      # bootstrap de producción documentado en docs/06-despliegue-produccion.md.
+      - name: Crear el admin de pruebas
+        run: |
+          code=$(curl -sS -o /dev/null -w '%{http_code}' -X POST \
+            http://localhost:8080/api/v1/auth/register \
+            -H 'Content-Type: application/json' \
+            -d '{"email":"admin@stockly.co","password":"Admin1234"}')
+          echo "register -> HTTP $code (409 = ya existía, no es un error)"
+          PGPASSWORD=stockly_dev psql -h localhost -U stockly -d stockly \
+            -c "UPDATE users SET role='ROLE_ADMIN' WHERE email='admin@stockly.co';"
+          PGPASSWORD=stockly_dev psql -h localhost -U stockly -d stockly \
+            -c "SELECT email, role FROM users WHERE email='admin@stockly.co';"
+
+      - name: Arrancar frontend
+        working-directory: apps/web
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8080/api/v1
+          NEXT_PUBLIC_DEFAULT_LOCALE: es-CO
+          NEXT_PUBLIC_DEFAULT_CURRENCY: COP
+          NEXT_PUBLIC_APP_VERSION: 0.1.0
+        run: |
+          nohup pnpm dev > /tmp/frontend.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS -o /dev/null http://localhost:3000/; then
+              echo "frontend listo"; exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::el frontend no respondió en :3000"
+          tail -50 /tmp/frontend.log
+          exit 1
+
+      - name: Instalar navegadores de Playwright
+        working-directory: apps/web
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Pruebas E2E
+        working-directory: apps/web
+        env:
+          E2E_BASE_URL: http://localhost:3000
+          E2E_API_URL: http://localhost:8080/api/v1
+          E2E_ADMIN_EMAIL: admin@stockly.co
+          # Credencial de E2E, no un secreto: es una cuenta de pruebas en la base
+          # efímera del runner. Ver apps/web/tests/README.md.
+          E2E_ADMIN_PASSWORD: Admin1234
+        run: pnpm test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report/
+          retention-days: 7

@@ -1,0 +1,12 @@
+# Uploaded to Vercel only what the web build needs.
+**/node_modules
+**/.next
+**/.turbo
+**/target
+**/.fe5-shots
+**/.fe5-shots.mjs
+**/test-results
+**/playwright-report
+**/coverage
+apps/backend
+*.log

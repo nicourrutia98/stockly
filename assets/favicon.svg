@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Stockly favicon">
+  <title>Stockly</title>
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E5AA8"/>
+      <stop offset="100%" stop-color="#0F4C81"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="32" height="32" rx="7" ry="7" fill="url(#g)"/>
+  <g transform="translate(6 8)">
+    <rect x="0" y="13" width="16" height="3" rx="1.5" fill="#FFFFFF" opacity="0.55"/>
+    <rect x="0" y="9"  width="13" height="3" rx="1.5" fill="#FFFFFF" opacity="0.75"/>
+    <rect x="0" y="5"  width="10" height="3" rx="1.5" fill="#F5B700"/>
+    <rect x="0" y="1"  width="7"  height="3" rx="1.5" fill="#FFFFFF"/>
+  </g>
+</svg>

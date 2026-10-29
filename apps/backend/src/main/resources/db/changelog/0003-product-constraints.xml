@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    0003 — Integrity constraints for the `products` table.
+
+    Constraints:
+        uk_products_sku           UNIQUE on (sku) — business-key uniqueness.
+                                  Mirrors the Bean Validation @Pattern on the
+                                  entity (defense in depth: app validation
+                                  can be bypassed by raw SQL).
+
+        ck_products_price_nonneg  CHECK (price >= 0) — non-negative price.
+                                  Mirrors @DecimalMin("0") on Product.price.
+
+        ck_products_stock_nonneg  CHECK (stock >= 0) — non-negative stock.
+                                  Mirrors @Min(0) on Product.stock.
+
+        ck_products_sku_format    CHECK (sku ~ '^[A-Z0-9-]+$') — uppercase
+                                  alphanumeric + dashes only. Mirrors @Pattern
+                                  on Product.sku.
+
+    Naming convention: ck_<table>_<rule> (PostgreSQL convention).
+    IF EXISTS in rollback so the changeset can be re-run in dev.
+-->
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="0003-product-constraints" author="stockly">
+        <comment>UNIQUE on sku + CHECK constraints (price, stock, sku format).</comment>
+
+        <!-- UNIQUE constraint on the business identifier. -->
+        <addUniqueConstraint
+            tableName="products"
+            columnNames="sku"
+            constraintName="uk_products_sku"/>
+
+        <!--
+            CHECK constraints as raw SQL because Liquibase does not have a
+            dedicated `addCheckConstraint` element that compiles to
+            PostgreSQL CHECK on every supported version. The IF NOT EXISTS
+            guard makes the changeset idempotent.
+        -->
+        <sql>
+            ALTER TABLE products
+                ADD CONSTRAINT ck_products_price_nonneg CHECK (price >= 0);
+        </sql>
+
+        <sql>
+            ALTER TABLE products
+                ADD CONSTRAINT ck_products_stock_nonneg CHECK (stock >= 0);
+        </sql>
+
+        <sql>
+            ALTER TABLE products
+                ADD CONSTRAINT ck_products_sku_format CHECK (sku ~ '^[A-Z0-9-]+$');
+        </sql>
+
+        <rollback>
+            <sql>ALTER TABLE products DROP CONSTRAINT IF EXISTS ck_products_sku_format;</sql>
+            <sql>ALTER TABLE products DROP CONSTRAINT IF EXISTS ck_products_stock_nonneg;</sql>
+            <sql>ALTER TABLE products DROP CONSTRAINT IF EXISTS ck_products_price_nonneg;</sql>
+            <dropUniqueConstraint
+                tableName="products"
+                constraintName="uk_products_sku"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,153 @@
+<!-- ==================================================================
+     PORTADA
+     ================================================================== -->
+<section class="slide dark cover">
+  <div class="logo">
+    {{LOGO_MARK}}
+    <span style="font-size:34px;font-weight:700;letter-spacing:-.02em">Stockly</span>
+  </div>
+  <div class="eyebrow">Plataforma de inventario · es-CO / en</div>
+  <h1>Un inventario que<br />se vende solo</h1>
+  <p class="sub">
+    La tienda es pública. El panel es privado.
+    Detrás hay un contrato de 75 requisitos versionado,
+    verificado contra la aplicación en ejecución —y sus 15 brechas,
+    declaradas una por una.
+  </p>
+  <div class="rule"></div>
+  <div class="auth">
+    <b>Juan Nicolas Urrutia Salcedo</b>
+    <b>Luisa Maria Jose Coronel Vargas</b>
+    <b>Ana Sofía Montaña Cedeño</b>
+  </div>
+  <div class="inst">Universidad Surcolombiana de Neiva · Materia Inteligencia Artificial · 2026</div>
+  <div class="foot"><span class="blocks"><i class="on"></i><i></i><i></i></span><span class="dot"></span><span>15 minutos · 3 ponentes</span><span class="spacer"></span><span class="n">01</span></div>
+  <div class="notes">Saludo y encuadre en una frase: no vamos a mostrar solo lo que funciona; vamos a mostrar cómo se decidió, qué se verificó y qué falta. Mencionar que la aplicación está corriendo y las láminas son capturas reales, no maquetas.</div>
+</section>
+
+<!-- ==================================================================
+     BLOQUE 1 — EL PRODUCTO  (Juan Nicolas · ~5 min)
+     ================================================================== -->
+<section class="slide dark">
+  <div class="eyebrow">Bloque 1 de 3 · El producto</div>
+  <div class="answer">
+    <div class="tag">La respuesta primero</div>
+    <p>Un comprador sin cuenta ve el stock real.
+       Un operador con cuenta lo cambia.
+       Nadie ve lo que no existe.</p>
+  </div>
+  <div class="body" style="padding-top:34px">
+    <div class="two" style="align-items:center">
+      <div>
+        <ul class="list">
+          <li><strong>Catálogo público</strong> — 6 rutas sin sesión.</li>
+          <li><strong>Panel de administración</strong> — 6 rutas, con control de rol en el servidor.</li>
+          <li><strong>Disponibilidad honesta</strong> — «Solo quedan 2», «Agotado». Nunca urgencia fabricada.</li>
+        </ul>
+      </div>
+      <figure class="shot">
+        {{IMG_02}}
+        <figcaption>/catalogo · sin sesión · availability real</figcaption>
+      </figure>
+    </div>
+  </div>
+  <div class="foot"><span class="blocks"><i class="on"></i><i></i><i></i></span><span class="dot"></span><span class="who">Juan Nicolas Urrutia Salcedo</span><span class="spacer"></span><span class="n">02</span></div>
+  <div class="notes">Marcar el ritmo de los tres bloques aquí. Decir explícitamente que el bloque 3 va a incluir las brechas, para que el jurado sepa que no se está escondiendo nada y escuche el resto con esa expectativa.</div>
+</section>
+
+<section class="slide soft">
+  <div class="eyebrow">El problema</div>
+  <h2>Una hoja de cálculo rompe<br />en tres sitios</h2>
+  <div class="body">
+    <div class="three">
+      <div class="card">
+        <span class="k">01 · Vender lo que no hay</span>
+        <p>La hoja no se actualiza al vender. Llega el comprador y se le <strong>niega el producto</strong> que vio publicado.</p>
+      </div>
+      <div class="card">
+        <span class="k">02 · Nadie mira la página</span>
+        <p>Si el precio y las existencias <strong>no se publican</strong>, la venta se pierde antes de empezar. No hay a dónde ir.</p>
+      </div>
+      <div class="card">
+        <span class="k">03 · Nadie sabe qué pasó</span>
+        <p>Sin registro de cambios, cuando algo sale mal <strong>no hay forma de saber</strong> qué pasó ni cuándo.</p>
+      </div>
+    </div>
+    <p class="lede" style="margin-top:34px">
+      Stockly ataca los tres con la misma tabla: el catálogo que ve el comprador
+      y el panel que edita el operador leen y escriben el mismo dato.
+    </p>
+  </div>
+  <div class="foot"><span class="blocks"><i class="on"></i><i></i><i></i></span><span class="dot"></span><span class="who">Juan Nicolas Urrutia Salcedo</span><span class="spacer"></span><span class="n">03</span></div>
+  <div class="notes">No leer las tres tarjetas: nombrarlas y quedarse en la tercera. La tercera es la que conecta con todo el bloque 2 (auditoría) y con el bloque 3 (trazabilidad). Si hay tiempo, preguntar al jurado cuál les parece el más grave.</div>
+</section>
+
+<section class="slide">
+  <div class="eyebrow">La corrección de rumbo</div>
+  <h2>Primero construimos un panel.<br />Después: faltaba media tienda.</h2>
+  <div class="body">
+    <div class="two wide-left">
+      <div>
+        <div class="honest">
+          <div class="t">El diagnóstico</div>
+          <p>
+            Todo lo construido estaba del lado del operador.
+            <strong>El dinero no tenía dónde ocurrir.</strong>
+            Un panel perfecto donde nadie compra.
+          </p>
+        </div>
+        <ul class="list" style="margin-top:28px">
+          <li>El catálogo pasó a ser <strong>público, sin cuenta</strong>.</li>
+          <li>La disponibilidad se hizo <strong>visible en la ficha</strong>, no escondida en la base.</li>
+          <li>Y de esa decisión salió una regla: <strong>la honestidad del estado es un requisito</strong>, no una cortesía visual.</li>
+        </ul>
+      </div>
+      <figure class="shot">
+        {{IMG_06}}
+        <figcaption>/admin · 6 indicadores · declara el recorte de 100</figcaption>
+      </figure>
+    </div>
+  </div>
+  <div class="foot"><span class="blocks"><i class="on"></i><i></i><i></i></span><span class="dot"></span><span class="who">Juan Nicolas Urrutia Salcedo</span><span class="spacer"></span><span class="n">04</span></div>
+  <div class="notes">Es el momento más honesto de la exposición: admitir que el producto estaba a medias. Contar que la corrección llegó por un diagnóstico, no por requisito, y que se resolvió con una especificación derivada en vez de reescribir el contrato original — porque reescribir un contrato vivo rompe su trazabilidad. Señalar el pie de la captura: los indicadores declaran que se calculan sobre los primeros 100 registros.</div>
+</section>
+
+<section class="slide soft">
+  <div class="eyebrow">Las dos superficies</div>
+  <h2>Un solo dato, dos lecturas</h2>
+  <div class="body">
+    <div class="two">
+      <figure class="shot">
+        {{IMG_02}}
+        <figcaption>Catálogo · lo que ve el comprador</figcaption>
+      </figure>
+      <figure class="shot">
+        {{IMG_07}}
+        <figcaption>Panel · lo que edita el operador</figcaption>
+      </figure>
+    </div>
+    <p class="lede" style="margin-top:26px">
+      La columna <span style="font-family:var(--mono);font-size:.92em">stock</span> es la misma en las dos.
+      «AGOTADO» y «BAJO · 2» no son adornos: son la regla de negocio <strong>RN-11</strong> dizendo la verdad.
+    </p>
+  </div>
+  <div class="foot"><span class="blocks"><i class="on"></i><i></i><i></i></span><span class="dot"></span><span class="who">Juan Nicolas Urrutia Salcedo</span><span class="spacer"></span><span class="n">05</span></div>
+  <div class="notes">Señalar el botón de reactivar (flecha verde) en la columna de acciones: existe porque la baja es lógica, no borrado físico. Un producto dado de baja sigue en la base y se puede volver a activar. Es RN-10, y es lo que hace reversible un error de teclado.</div>
+</section>
+
+<section class="slide dark">
+  <div class="eyebrow">Cierre del bloque 1</div>
+  <div class="answer" style="margin-top:26px">
+    <div class="tag">Lo que acaba de verse</div>
+    <p>El producto existe, se corrigió a mitad de camino,
+       y su regla central es no mentir sobre el estado.</p>
+  </div>
+  <div class="body" style="justify-content:center">
+    <p class="lede" style="font-size:29px;max-width:900px">
+      Lo que sigue no es cómo se ve, sino <strong style="color:#fff">cómo se construyó
+      y cómo se comprobó</strong>. Empieza Luisa.
+    </p>
+  </div>
+  <div class="foot"><span class="blocks"><i class="on"></i><i></i><i></i></span><span class="dot"></span><span class="who">Juan Nicolas Urrutia Salcedo</span><span class="spacer"></span><span class="n">06</span></div>
+  <div class="notes">Tránsito limpio. No añadir contenido nuevo: solo pasar la palabra. El bloque 2 es de Luisa, el bloque 3 es de Ana.</div>
+</section>

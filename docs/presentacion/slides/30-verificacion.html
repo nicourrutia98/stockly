@@ -1,0 +1,138 @@
+<!-- ==================================================================
+     BLOQUE 3 — LA VERIFICACIÓN  (Ana Sofía Montaña Cedeño · ~5 min)
+     ================================================================== -->
+<section class="slide dark">
+  <div class="eyebrow">Bloque 3 de 3 · La verificación</div>
+  <div class="answer">
+    <div class="tag">La respuesta primero</div>
+    <p>38 pruebas end-to-end en verde
+       y <span style="color:var(--accent-500)">cero pruebas de backend</span>.</p>
+  </div>
+  <div class="body" style="padding-top:34px">
+    <div class="honest" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.18)">
+      <div class="t" style="color:var(--accent-500)">Por qué lo digo primero</div>
+      <p style="color:#D8E6F5;font-size:25px">
+        Es lo primero que va a preguntar el jurado, así que conviene que la respuesta
+        la tengan antes de que la formulen.
+      </p>
+    </div>
+    <p class="lede" style="margin-top:26px">
+      El sistema <strong>funciona</strong>: se verificó endpoint por endpoint contra la
+      aplicación levantada. Lo que no existe es la <strong>red que lo vuelva a demostrar solo</strong>.
+    </p>
+  </div>
+  <div class="foot"><span class="blocks"><i></i><i></i><i class="on"></i></span><span class="dot"></span><span class="who">Ana Sofía Montaña Cedeño</span><span class="spacer"></span><span class="n">12</span></div>
+  <div class="notes">Decir la cifra sin rodeos y sin disculpa. La distinction clave: «funciona» y «está verificado» no son lo mismo, y la diferencia es exactamente el trabajo que falta. Si el jurado pregunta cuántos requisitos están cumplidos: 75 catalogados, 60 cumplidos, 4 parciales, 8 pendientes, 3 configurados pero nunca ejecutados.</div>
+</section>
+
+<section class="slide soft">
+  <div class="eyebrow">Dónde sí hay evidencia</div>
+  <h2>Lo que se puede volver a ejecutar hoy</h2>
+  <div class="body">
+    <div class="three">
+      <div class="card">
+        <span class="k">38 · E2E en navegador real</span>
+        <p>Escritorio y móvil. Se autentican por la interfaz, como una persona.</p>
+      </div>
+      <div class="card">
+        <span class="k">0 · violaciones graves de accesibilidad</span>
+        <p>axe-core corre <strong>dentro</strong> de cada prueba, no como revisión aparte.</p>
+      </div>
+      <div class="card">
+        <span class="k">11 · rutas con estados propios</span>
+        <p>Carga, error y no encontrado. Nunca una pantalla en blanco.</p>
+      </div>
+    </div>
+    <p class="lede" style="margin-top:32px">
+      Y hay dos cosas más que <strong>sí son comprobables sin pruebas</strong>:
+      la sesión (rotación de un solo uso, verificada a mano devolviendo <span style="font-family:var(--mono);font-size:.9em">401</span>)
+      y la autorización (usuario común → <span style="font-family:var(--mono);font-size:.9em">403</span>, anónimo → <span style="font-family:var(--mono);font-size:.9em">401</span>).
+    </p>
+  </div>
+  <div class="foot"><span class="blocks"><i></i><i></i><i class="on"></i></span><span class="dot"></span><span class="who">Ana Sofía Montaña Cedeño</span><span class="spacer"></span><span class="n">13</span></div>
+  <div class="notes">Esta lámina equilibra la anterior. Aclarar un matiz técnico que impresiona: los tests no usan storageState porque el token vive en memoria, así que cada prueba se autentica por la UI. Es una limitación del diseño de sesión que termina siendo una ventaja: la prueba recorre el flujo real de login.</div>
+</section>
+
+<section class="slide">
+  <div class="eyebrow">La brecha central</div>
+  <h2>Configurado no es ejecutado</h2>
+  <div class="body">
+    <div class="stats">
+      <div class="stat"><div class="v">80<span style="font-size:32px">%</span></div><div class="l">cobertura mínima de líneas<br /><strong>configurada, nunca ejecutada</strong></div></div>
+      <div class="stat"><div class="v">60<span style="font-size:32px">%</span></div><div class="l">puntaje de mutación mínimo<br /><strong>configurado, nunca ejecutado</strong></div></div>
+      <div class="stat bad"><div class="v">0</div><div class="l">pruebas de backend<br /><strong>ni una</strong></div></div>
+      <div class="stat bad"><div class="v">0</div><div class="l">ejecuciones en integración continua<br /><strong>no existe</strong></div></div>
+    </div>
+    <div class="honest" style="margin-top:36px">
+      <div class="t">Y esto es lo que más pesa</div>
+      <p>
+        Sin integración continua, las otras tres compuertas son
+        <strong>configuración que nadie dispara</strong>. Un umbral que nunca corre
+        no es un umbral: es un mensaje de intenciones.
+      </p>
+    </div>
+  </div>
+  <div class="foot"><span class="blocks"><i></i><i></i><i class="on"></i></span><span class="dot"></span><span class="who">Ana Sofía Montaña Cedeño</span><span class="spacer"></span><span class="n">14</span></div>
+  <div class="notes">Aquí está el argumento central del bloque. La frase para el jurado: un umbral de cobertura que nunca se ejecuta no protege nada. Construir la integración continua es un archivo de configuración y dos órdenes, y es lo que desbloquea todo lo demás.</div>
+</section>
+
+<section class="slide soft">
+  <div class="eyebrow">El plan, en orden</div>
+  <h2>Qué haríamos primero</h2>
+  <div class="body">
+    <div class="two" style="gap:34px">
+      <div>
+        <ul class="list" style="gap:15px">
+          <li><strong>1 · Integración continua.</strong> Sin ella nada más se ejecuta solo.</li>
+          <li><strong>2 · Pruebas de backend</strong> con PostgreSQL real en contenedor.</li>
+          <li><strong>3 · Matriz de trazabilidad</strong> requisito ↔ prueba, en ambos sentidos.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="list" style="gap:15px">
+          <li><strong>4 · Análisis de dependencias.</strong> La herramienta ya está configurada: es una orden.</li>
+          <li><strong>5 · Medición de usabilidad</strong> con una persona real. Se puede hacer en paralelo.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="lede" style="margin-top:30px;font-size:24px">
+      El orden no es por dificultad, es por <strong>dependencia</strong>: cada paso hace posible el siguiente.
+      Hay 15 brechas registradas en total; estas son las cinco con mayor relación entre esfuerzo y valor.
+    </p>
+  </div>
+  <div class="foot"><span class="blocks"><i></i><i></i><i class="on"></i></span><span class="dot"></span><span class="who">Ana Sofía Montaña Cedeño</span><span class="spacer"></span><span class="n">15</span></div>
+  <div class="notes">El paso 5 merece una frase: la medición de usabilidad (SUS ≥ 68, tasa de éxito ≥ 90 %) es la única que no depende de una herramienta, depende de una persona. El protocolo ya está escrito; falta una sesión de 40 minutos con un participante que nunca haya visto el sistema.</div>
+</section>
+
+<!-- ==================================================================
+     CIERRE
+     ================================================================== -->
+<section class="slide dark cover">
+  <div class="eyebrow">Cierre</div>
+  <h1 style="font-size:62px;max-width:1000px">Lo que queremos que se lleven</h1>
+  <div class="rule"></div>
+  <div class="two" style="gap:46px;margin-top:8px">
+    <div>
+      <ul class="list" style="gap:17px">
+        <li>Un sistema <strong style="color:#fff">construido con reglas explícitas</strong>, no por acumulación.</li>
+        <li>Una documentación que <strong style="color:#fff">se contradice a sí misma</strong> y por eso es creíble.</li>
+        <li>Y un plan que empieza por lo que hace posible todo lo demás.</li>
+      </ul>
+    </div>
+    <div>
+      <div style="font-family:var(--mono);font-size:17px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-500);margin-bottom:16px">Documentación abierta</div>
+      <div class="auth" style="font-size:20px;gap:8px">
+        <div><b>docs/README.md</b> — por dónde empezar</div>
+        <div><b>01-requisitos.md</b> — 75 requisitos con estado</div>
+        <div><b>04-estado-y-brechas.md</b> — las 15 brechas</div>
+        <div><b>assets/presentacion/</b> — estas capturas</div>
+      </div>
+      <div class="inst" style="margin-top:26px;line-height:1.6">
+        Aplicación corriendo en http://localhost:3000<br />
+        Licencia MIT · Código abierto
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="blocks"><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="dot"></span><span>Gracias · preguntas</span><span class="spacer"></span><span class="n">16</span></div>
+  <div class="notes">Cerrar volviendo al mensaje del principio: el bloque 3 existe para que el bloque 1 y 2 valgan. Si hay tiempo para preguntas, las tres más probables son: (1) por qué no hay pruebas unitarias de backend —respuesta: tiempo, y el orden del plan las pone primeras; (2) por qué el SKU es inmutable; (3) qué pasa con la concurrency de sesiones.</div>
+</section>

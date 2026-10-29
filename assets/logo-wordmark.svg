@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 160" width="640" height="160" role="img" aria-label="Stockly wordmark">
+  <title>Stockly wordmark</title>
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E5AA8"/>
+      <stop offset="100%" stop-color="#0F4C81"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon on the left (same as mark, scaled) -->
+  <g transform="translate(0 0) scale(0.5)">
+    <rect x="0" y="0" width="240" height="240" rx="56" ry="56" fill="url(#g)"/>
+    <g transform="translate(48 60)">
+      <rect x="0" y="92" width="120" height="20" rx="10" fill="#FFFFFF" opacity="0.55"/>
+      <rect x="0" y="62" width="96"  height="20" rx="10" fill="#FFFFFF" opacity="0.75"/>
+      <rect x="0" y="32" width="72"  height="20" rx="10" fill="#F5B700"/>
+      <rect x="0" y="2"  width="48"  height="20" rx="10" fill="#FFFFFF"/>
+    </g>
+  </g>
+
+  <!-- Wordmark: Inter / system-ui, semibold -->
+  <text x="140" y="108"
+        font-family="Inter, system-ui, -apple-system, 'Segoe UI', sans-serif"
+        font-size="76"
+        font-weight="600"
+        letter-spacing="-2"
+        fill="#0F4C81">Stockly</text>
+</svg>

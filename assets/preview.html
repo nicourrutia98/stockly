@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stockly — Brand Preview</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --c-primary-400: #1E5AA8;
+      --c-primary-500: #0F4C81;
+      --c-primary-600: #0A3B66;
+      --c-accent-500: #F5B700;
+      --c-accent-600: #FFC940;
+      --c-success: #16A34A;
+      --c-danger: #DC2626;
+      --c-warning: #D97706;
+      --c-gray-50: #F8FAFC;
+      --c-gray-100: #F1F5F9;
+      --c-gray-200: #E2E8F0;
+      --c-gray-500: #64748B;
+      --c-gray-700: #334155;
+      --c-gray-900: #0F172A;
+      --c-surface-dark: #0B1220;
+      --c-surface-dark-elevated: #15203B;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: var(--c-gray-50);
+      color: var(--c-gray-900);
+      line-height: 1.5;
+      scroll-behavior: smooth;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 48px 32px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--c-gray-200);
+      margin-bottom: 48px;
+    }
+    .header img { height: 72px; }
+    .header .title-block h1 {
+      font-size: 32px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: var(--c-primary-500);
+    }
+    .header .title-block p {
+      color: var(--c-gray-500);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    /* Section */
+    section {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    section.dark {
+      background: var(--c-surface-dark);
+      color: #E2E8F0;
+    }
+    section.dark h2 { color: #fff; }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--c-gray-900);
+    }
+    h2 .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      background: var(--c-accent-500);
+      color: var(--c-gray-900);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .subtitle {
+      color: var(--c-gray-500);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    /* Color swatches */
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .swatch {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--c-gray-200);
+      background: #fff;
+    }
+    .swatch .chip {
+      height: 96px;
+      display: flex;
+      align-items: flex-end;
+      padding: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .swatch .info {
+      padding: 12px;
+      border-top: 1px solid var(--c-gray-100);
+    }
+    .swatch .name {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--c-gray-900);
+    }
+    .swatch .role {
+      font-size: 12px;
+      color: var(--c-gray-500);
+      margin-top: 2px;
+    }
+    .swatch .hex {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--c-gray-700);
+      margin-top: 6px;
+    }
+
+    /* Typography */
+    .type-row {
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--c-gray-100);
+    }
+    .type-row:last-child { border-bottom: none; }
+    .type-row .label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--c-gray-500);
+      min-width: 80px;
+    }
+    .type-display { font-size: 48px; line-height: 1.1; font-weight: 700; letter-spacing: -1px; color: var(--c-gray-900); }
+    .type-h1 { font-size: 32px; line-height: 1.2; font-weight: 600; color: var(--c-gray-900); }
+    .type-h2 { font-size: 24px; line-height: 1.25; font-weight: 600; color: var(--c-gray-900); }
+    .type-h3 { font-size: 20px; line-height: 1.3; font-weight: 600; color: var(--c-gray-900); }
+    .type-body { font-size: 16px; line-height: 1.5; color: var(--c-gray-700); }
+    .type-small { font-size: 14px; line-height: 1.4; color: var(--c-gray-500); }
+    .type-mono { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--c-gray-700); }
+
+    /* Logo showcase */
+    .logo-showcase {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+    .logo-tile {
+      background: var(--c-gray-100);
+      border-radius: 16px;
+      padding: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 220px;
+      position: relative;
+    }
+    .logo-tile.dark-tile { background: var(--c-surface-dark); }
+    .logo-tile.white-tile { background: #FFFFFF; border: 1px solid var(--c-gray-200); }
+    .logo-tile .scale-label {
+      position: absolute;
+      bottom: 8px;
+      right: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--c-gray-500);
+    }
+    .logo-tile.dark-tile .scale-label { color: rgba(255,255,255,0.5); }
+
+    .logo-sizes {
+      margin-top: 32px;
+      display: flex;
+      gap: 32px;
+      align-items: center;
+      padding: 24px;
+      background: var(--c-gray-100);
+      border-radius: 12px;
+    }
+    .logo-sizes .label { font-size: 13px; color: var(--c-gray-500); margin-right: 12px; }
+    .logo-sizes img { display: block; }
+
+    /* Component mockup (Mantine-ish) */
+    .mock-card {
+      background: #fff;
+      border: 1px solid var(--c-gray-200);
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 480px;
+    }
+    .mock-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+    .mock-card p { font-size: 14px; color: var(--c-gray-500); margin-bottom: 16px; }
+    .mock-btn {
+      background: var(--c-primary-500);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .mock-btn:hover { background: var(--c-primary-400); }
+    .mock-btn-accent {
+      background: var(--c-accent-500);
+      color: var(--c-gray-900);
+      margin-left: 8px;
+    }
+    .mock-btn-accent:hover { background: var(--c-accent-600); }
+    .mock-input {
+      display: block;
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--c-gray-200);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    .mock-input:focus {
+      outline: none;
+      border-color: var(--c-primary-500);
+      box-shadow: 0 0 0 3px rgba(15, 76, 129, 0.15);
+    }
+
+    /* Spec list */
+    .spec-list {
+      list-style: none;
+      padding: 0;
+    }
+    .spec-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--c-gray-100);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .spec-list li:last-child { border-bottom: none; }
+    .spec-list .id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--c-primary-500);
+      background: rgba(15, 76, 129, 0.08);
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .spec-list .text { font-size: 14px; color: var(--c-gray-700); }
+
+    /* Mockup screen */
+    .mockup {
+      background: var(--c-gray-100);
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid var(--c-gray-200);
+    }
+    .mockup-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--c-gray-200);
+      margin-bottom: 16px;
+    }
+    .mockup-header img { height: 40px; }
+    .mockup-header .crumb { color: var(--c-gray-500); font-size: 14px; }
+    .mockup-table {
+      width: 100%;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--c-gray-200);
+    }
+    .mockup-table th {
+      text-align: left;
+      padding: 10px 14px;
+      background: var(--c-gray-100);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--c-gray-700);
+      border-bottom: 1px solid var(--c-gray-200);
+    }
+    .mockup-table td {
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--c-gray-700);
+      border-bottom: 1px solid var(--c-gray-100);
+    }
+    .mockup-table td.mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .mockup-table .price { color: var(--c-primary-500); font-weight: 600; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      color: var(--c-gray-500);
+      font-size: 13px;
+      padding-top: 32px;
+      border-top: 1px solid var(--c-gray-200);
+      margin-top: 48px;
+    }
+
+    /* Grid layout */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 768px) {
+      .two-col { grid-template-columns: 1fr; }
+      .logo-showcase { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- HEADER -->
+    <header class="header">
+      <img src="logo-wordmark.svg" alt="Stockly">
+      <div class="title-block">
+        <h1>Brand Preview</h1>
+        <p>Sistema de diseño visual — spec_id=6 · sesión activa</p>
+      </div>
+    </header>
+
+    <!-- LOGO -->
+    <section>
+      <h2>Logo <span class="badge">3 variantes</span></h2>
+      <p class="subtitle">Tile azul gradient + 4 barras ascendentes (inventario creciendo) + grid de puntos SKU. Sin palabras en el mark → escala desde 16px a 240px.</p>
+
+      <div class="logo-showcase">
+        <div class="logo-tile dark-tile">
+          <img src="logo-mark.svg" alt="Logo mark" style="height:160px;">
+          <span class="scale-label">mark · 240×240</span>
+        </div>
+        <div class="logo-tile white-tile">
+          <img src="logo-mark.svg" alt="Logo mark" style="height:120px;">
+          <span class="scale-label">mark · medio</span>
+        </div>
+        <div class="logo-tile" style="background:#F1F5F9;">
+          <img src="logo-mark.svg" alt="Logo mark" style="height:64px;">
+          <span class="scale-label">mark · compacto</span>
+        </div>
+      </div>
+
+      <div class="logo-sizes">
+        <span class="label">Sizes (mark):</span>
+        <img src="logo-mark.svg" alt="" style="height:16px;">
+        <img src="logo-mark.svg" alt="" style="height:24px;">
+        <img src="logo-mark.svg" alt="" style="height:32px;">
+        <img src="logo-mark.svg" alt="" style="height:48px;">
+        <img src="logo-mark.svg" alt="" style="height:64px;">
+        <img src="logo-mark.svg" alt="" style="height:96px;">
+      </div>
+    </section>
+
+    <!-- PALETTE -->
+    <section>
+      <h2>Paleta <span class="badge">WCAG validado</span></h2>
+      <p class="subtitle">Primary azul cognitivo (research universitario 2026: +42% retención). Acento amarillo para atención sin alarma. Tokens optimizados para light y dark.</p>
+
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="chip" style="background:#1E5AA8;color:#fff;">primary-400</div>
+          <div class="info"><div class="name">Primary 400</div><div class="role">Gradient · hover</div><div class="hex">#1E5AA8</div></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#0F4C81;color:#fff;">primary-500</div>
+          <div class="info"><div class="name">Primary 500</div><div class="role">Brand · CTAs · focus</div><div class="hex">#0F4C81</div></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#0A3B66;color:#fff;">primary-600</div>
+          <div class="info"><div class="name">Primary 600</div><div class="role">Active · texto</div><div class="hex">#0A3B66</div></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#F5B700;color:#0F172A;">accent</div>
+          <div class="info"><div class="name">Accent</div><div class="role">CTAs destacados</div><div class="hex">#F5B700</div></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#16A34A;color:#fff;">success</div>
+          <div class="info"><div class="name">Success</div><div class="role">Validación OK</div><div class="hex">#16A34A</div></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#DC2626;color:#fff;">danger</div>
+          <div class="info"><div class="name">Danger</div><div class="role">Errores</div><div class="hex">#DC2626</div></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#D97706;color:#fff;">warning</div>
+          <div class="info"><div class="name">Warning</div><div class="role">Stock bajo</div><div class="hex">#D97706</div></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#F8FAFC;color:#0F172A;border-bottom:1px solid #E2E8F0;">gray-50</div>
+          <div class="info"><div class="name">Gray 50</div><div class="role">Fondo app light</div><div class="hex">#F8FAFC</div></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#E2E8F0;color:#0F172A;">gray-200</div>
+          <div class="info"><div class="name">Gray 200</div><div class="role">Bordes</div><div class="hex">#E2E8F0</div></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#64748B;color:#fff;">gray-500</div>
+          <div class="info"><div class="name">Gray 500</div><div class="role">Texto secundario</div><div class="hex">#64748B</div></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#334155;color:#fff;">gray-700</div>
+          <div class="info"><div class="name">Gray 700</div><div class="role">Texto body</div><div class="hex">#334155</div></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#0F172A;color:#fff;">gray-900</div>
+          <div class="info"><div class="name">Gray 900</div><div class="role">Títulos</div><div class="hex">#0F172A</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DARK MODE -->
+    <section class="dark">
+      <h2>Modo oscuro</h2>
+      <p class="subtitle" style="color:#94A3B8;">Background `#0B1220`, cards `#15203B`, primary pasa a `#1E5AA8`, acento amarillo a `#FFC940`.</p>
+
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="chip" style="background:#0B1220;color:#fff;border-bottom:1px solid #1E293B;">bg</div>
+          <div class="info"><div class="name" style="color:#fff;">App bg</div><div class="hex">#0B1220</div></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#15203B;color:#fff;">elevated</div>
+          <div class="info"><div class="name" style="color:#fff;">Cards</div><div class="hex">#15203B</div></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#1E5AA8;color:#fff;">primary</div>
+          <div class="info"><div class="name" style="color:#fff;">Primary dark</div><div class="hex">#1E5AA8</div></div>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#FFC940;color:#0F172A;">accent</div>
+          <div class="info"><div class="name" style="color:#fff;">Accent dark</div><div class="hex">#FFC940</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TYPOGRAPHY -->
+    <section>
+      <h2>Tipografía</h2>
+      <p class="subtitle">Inter para UI (400/500/600/700). JetBrains Mono para SKU y códigos.</p>
+
+      <div class="type-row">
+        <span class="label">display</span>
+        <span class="type-display">Stockly · Inventario inteligente</span>
+      </div>
+      <div class="type-row">
+        <span class="label">H1</span>
+        <span class="type-h1">Gestión de productos simplificada</span>
+      </div>
+      <div class="type-row">
+        <span class="label">H2</span>
+        <span class="type-h2">Listado paginado con filtros</span>
+      </div>
+      <div class="type-row">
+        <span class="label">H3</span>
+        <span class="type-h3">Detalles del producto</span>
+      </div>
+      <div class="type-row">
+        <span class="label">body</span>
+        <span class="type-body">Vista principal con tabla server-side, búsqueda, filtros por categoría y rango de precio. Optimizado para uso universitario.</span>
+      </div>
+      <div class="type-row">
+        <span class="label">small</span>
+        <span class="type-small">Última actualización: hace 5 minutos · 14 productos en stock</span>
+      </div>
+      <div class="type-row">
+        <span class="label">mono</span>
+        <span class="type-mono">SKU-00042 · ACTIVE · $1,250,000 COP</span>
+      </div>
+    </section>
+
+    <!-- MOCKUP SCREEN -->
+    <section>
+      <h2>Vista previa de producto <span class="badge">mockup</span></h2>
+      <p class="subtitle">Cómo se vería una pantalla de listado de productos con la paleta y tipografía aplicadas.</p>
+
+      <div class="mockup">
+        <div class="mockup-header">
+          <img src="logo-mark.svg" alt="Stockly">
+          <span class="crumb">Productos</span>
+        </div>
+
+        <table class="mockup-table">
+          <thead>
+            <tr>
+              <th>SKU</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">SKU-00042</td>
+              <td>Cuaderno universitario A4</td>
+              <td>Papelería</td>
+              <td class="price">$ 12.500 COP</td>
+              <td>184</td>
+              <td><span style="color:#16A34A;font-weight:600;">● Activo</span></td>
+            </tr>
+            <tr>
+              <td class="mono">SKU-00078</td>
+              <td>Lápiz HB con borrador</td>
+              <td>Papelería</td>
+              <td class="price">$ 850 COP</td>
+              <td>421</td>
+              <td><span style="color:#16A34A;font-weight:600;">● Activo</span></td>
+            </tr>
+            <tr>
+              <td class="mono">SKU-00103</td>
+              <td>Mochila urbana 25L</td>
+              <td>Accesorios</td>
+              <td class="price">$ 89.900 COP</td>
+              <td>7</td>
+              <td><span style="color:#D97706;font-weight:600;">● Stock bajo</span></td>
+            </tr>
+            <tr>
+              <td class="mono">SKU-00157</td>
+              <td>Cable USB-C 1m</td>
+              <td>Electrónica</td>
+              <td class="price">$ 18.000 COP</td>
+              <td>0</td>
+              <td><span style="color:#DC2626;font-weight:600;">● Agotado</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- COMPONENTS -->
+    <section>
+      <h2>Componentes UI <span class="badge">Mantine 7</span></h2>
+      <p class="subtitle">Botones, inputs y cards con la paleta aplicada.</p>
+
+      <div class="two-col">
+        <div class="mock-card">
+          <h3>Crear producto</h3>
+          <p>Formulario con validación React Hook Form + Zod.</p>
+          <input class="mock-input" type="text" placeholder="Nombre del producto" value="Cuaderno A4">
+          <input class="mock-input" type="text" placeholder="SKU" value="SKU-00042">
+          <input class="mock-input" type="text" placeholder="Precio (COP)" value="$ 12.500">
+          <div>
+            <button class="mock-btn">Guardar producto</button>
+            <button class="mock-btn mock-btn-accent">Cancelar</button>
+          </div>
+        </div>
+
+        <div class="mock-card" style="background:var(--c-surface-dark);border-color:var(--c-surface-dark-elevated);">
+          <h3 style="color:#fff;">Resumen oscuro</h3>
+          <p style="color:#94A3B8;">El modo oscuro se activa automáticamente según la preferencia del sistema.</p>
+          <div style="display:flex;gap:8px;margin-top:16px;">
+            <span style="background:#15203B;color:#E2E8F0;padding:4px 10px;border-radius:4px;font-size:12px;">es-CO</span>
+            <span style="background:#1E5AA8;color:#fff;padding:4px 10px;border-radius:4px;font-size:12px;">USD</span>
+            <span style="background:#FFC940;color:#0F172A;padding:4px 10px;border-radius:4px;font-size:12px;font-weight:600;">+ Crear</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SPEC OVERVIEW -->
+    <section>
+      <h2>Spec activo <span class="badge">spec_id=6 · 15 tareas</span></h2>
+      <p class="subtitle">Visión compacta del alcance consolidado. Detalles completos en dark-memory y se escribirán a `docs/` durante implementación.</p>
+
+      <ul class="spec-list">
+        <li><span class="id">T1</span><span class="text">Bootstrap monorepo pnpm + Turborepo 2.x (apps/web Next.js 15, apps/backend Spring Boot, packages/shared)</span></li>
+        <li><span class="id">T2</span><span class="text">Entidad Product + DTOs Java 17 records + MapStruct</span></li>
+        <li><span class="id">T3</span><span class="text">ProductRepository con JpaSpecificationExecutor + Liquibase changelog</span></li>
+        <li><span class="id">T4</span><span class="text">ProductService + GlobalExceptionHandler (RFC 7807 ProblemDetail)</span></li>
+        <li><span class="id">T5</span><span class="text">ProductController REST con OpenAPI 3.0 (5 endpoints)</span></li>
+        <li><span class="id">T6</span><span class="text">Security: JWT access 15min + refresh rotation Redis JTI blacklist + HttpOnly cookie</span></li>
+        <li><span class="id">T7</span><span class="text">Backend i18n: messages_es.properties (default) + messages_en.properties</span></li>
+        <li><span class="id">T8</span><span class="text">Frontend Next.js 15 + Mantine v7 + RHF + Zod + TanStack Query + Zustand + Tabler</span></li>
+        <li><span class="id">T9</span><span class="text">Features: ProductList (mantine-datatable), ProductForm (RHF+Zod), ProductDetail, Auth</span></li>
+        <li><span class="id">T10</span><span class="text">Frontend i18n: react-i18next + currencies USD/COP + LanguageSwitcher</span></li>
+        <li><span class="id">T11</span><span class="text">Backend tests: JUnit 5 + Testcontainers + @WebMvcTest + JaCoCo 80% + PIT mutation 60%</span></li>
+        <li><span class="id">T12</span><span class="text">Frontend tests: Vitest + RTL + MSW v2 + Playwright cross-browser + axe-core + Gherkin BDD</span></li>
+        <li><span class="id">T13</span><span class="text">Security/stress: OWASP ZAP + dependency-check (CVSS≥7) + k6 50VUs/5min + Bucket4j</span></li>
+        <li><span class="id">T14</span><span class="text">Documentación: springdoc + JavaDoc + README bilingüe + ADRs + CHANGELOG</span></li>
+        <li><span class="id">T15</span><span class="text">Gap Closure Testing: RTM + IEEE 1012-2024 + ISO/IEC/IEEE 29119 + Test Summary Report</span></li>
+      </ul>
+    </section>
+
+    <footer>
+      Stockly Brand Preview · sesión dark-memory <code>sess-e564b3e2d0bdf1eb</code> · spec_id=6
+    </footer>
+  </div>
+</body>
+</html>

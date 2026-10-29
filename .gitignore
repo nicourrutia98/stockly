@@ -1,0 +1,83 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+.next/
+out/
+build/
+target/
+*.tsbuildinfo
+
+# Turbo cache
+.turbo/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment files (never commit secrets)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Machine-specific compose override (host port collisions). See docker-compose.yml.
+docker-compose.override.yml
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Java / Maven
+.mvn/wrapper/maven-wrapper.jar
+*.class
+
+# Coverage / test artifacts
+coverage/
+*.lcov
+.jacoco/
+htmlcov/
+.pytest_cache/
+
+# Spring Boot
+HELP.md
+!.mvn/wrapper/maven-wrapper.properties
+
+# ---------------------------------------------------------------------------
+# dark-agents (herramienta de gobernanza, NO es codigo del proyecto)
+# ---------------------------------------------------------------------------
+# El servidor dark-memory-mcp vive aqui como clon de su propio repositorio
+# (155 MB, con .git anidado). Subirlo convertiria el proyecto en un submodulo
+# sin proposito y multiplicaria el tamano del repo.
+/dark-memory/
+
+# Base de datos del servidor de memoria: es estado de runtime (registro de
+# auditoria de la sesion), no codigo. Se regenera al arrancar la herramienta.
+/dark-memory.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Artefactos generados por las pruebas end-to-end (se regeneran con
+# `pnpm exec playwright test`; el informe HTML pesa y no aporta al codigo).
+apps/web/playwright-report/
+apps/web/test-results/
+apps/web/.playwright/
+/test-results/
+/playwright-report/
+
+# Capturas de pantalla de la revision visual: son evidencia de una corrida
+# concreta, no fuente. El script que las genera (.fe5-shots.mjs) si se versiona.
+apps/web/.fe5-shots/

@@ -1,0 +1,48 @@
+{
+  "name": "@stockly/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Stockly shared types — TypeScript types + Zod schemas used by both apps/web and apps/backend (consumed via JSON contracts).",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./types/product": {
+      "types": "./dist/types/product.d.ts",
+      "default": "./dist/types/product.js"
+    },
+    "./types/auth": {
+      "types": "./dist/types/auth.d.ts",
+      "default": "./dist/types/auth.js"
+    },
+    "./types/error": {
+      "types": "./dist/types/error.d.ts",
+      "default": "./dist/types/error.js"
+    },
+    "./types/api": {
+      "types": "./dist/types/api.d.ts",
+      "default": "./dist/types/api.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch --preserveWatchOutput",
+    "clean": "rm -rf dist .turbo *.tsbuildinfo",
+    "lint": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.0",
+    "typescript": "^5.6.3"
+  }
+}

@@ -1,0 +1,31 @@
+# Local backend overrides — never commit.
+
+target/
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.project
+.classpath
+.settings/
+
+# Maven wrapper jar — keep .properties so the wrapper can self-download
+.mvn/wrapper/maven-wrapper.jar
+
+# Build artifacts
+build/
+out/
+
+# Test outputs
+.jacoco/
+coverage/
+*.lcov
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.local

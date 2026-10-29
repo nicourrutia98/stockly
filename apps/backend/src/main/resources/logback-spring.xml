@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Stockly backend — Logback config.
+
+    Profiles:
+      - dev  : human-readable pattern layout, colorized.
+      - prod : structured JSON via logstash-logback-encoder so logs are parseable
+               by the log aggregator (Loki / ELK / Datadog).
+
+    Service name is emitted in every record (`service` field) so dashboards can
+    filter by service in a shared cluster.
+-->
+<configuration scan="true" scanPeriod="30 seconds">
+
+    <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="stockly-backend"/>
+    <springProperty scope="context" name="activeProfile" source="spring.profiles.active" defaultValue="dev"/>
+
+    <appender name="STDOUT_PATTERN" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+                <pattern>
+                        %d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${appName} [traceId=%X{requestId:-},correlationId=%X{correlationId:-}] %15.15t %-40.40logger{39} : %m%n%ex
+                    </pattern>
+            </encoder>
+    </appender>
+
+    <appender name="STDOUT_JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                    <timestamp>
+                            <fieldName>@timestamp</fieldName>
+                            <timeZone>UTC</timeZone>
+                        </timestamp>
+                        <version>
+                            <fieldName>@version</fieldName>
+                        </version>
+                        <logLevel>
+                            <fieldName>level</fieldName>
+                        </logLevel>
+                        <loggerName>
+                            <fieldName>logger</fieldName>
+                            <shortenedLoggerNameLength>40</shortenedLoggerNameLength>
+                        </loggerName>
+                        <threadName>
+                            <fieldName>thread</fieldName>
+                        </threadName>
+                        <pattern>
+                            <pattern>
+                                    {
+                                      "service": "${appName}",
+                                      "profile": "${activeProfile}",
+                                      "traceId": "%mdc{requestId:-}",
+                                      "correlationId": "%mdc{correlationId:-}"
+                                    }
+                                </pattern>
+                        </pattern>
+                        <message>
+                            <fieldName>message</fieldName>
+                        </message>
+                        <stackTrace>
+                            <fieldName>stack</fieldName>
+                            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                                <maxDepthPerThrowable>100</maxDepthPerThrowable>
+                                <rootCauseFirst>true</rootCauseFirst>
+                            </throwableConverter>
+                        </stackTrace>
+                    </providers>
+            </encoder>
+    </appender>
+
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="STDOUT_JSON"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="!prod">
+        <root level="INFO">
+            <appender-ref ref="STDOUT_PATTERN"/>
+        </root>
+        <logger name="com.stockly" level="DEBUG"/>
+        <logger name="org.hibernate.SQL" level="DEBUG"/>
+    </springProfile>
+
+</configuration>

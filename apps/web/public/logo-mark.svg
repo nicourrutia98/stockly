@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240" role="img" aria-label="Stockly mark">
+  <title>Stockly</title>
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E5AA8"/>
+      <stop offset="100%" stop-color="#0F4C81"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded square background tile (48px radius on 240 canvas) -->
+  <rect x="0" y="0" width="240" height="240" rx="56" ry="56" fill="url(#g)"/>
+
+  <!-- Inner geometry: stacked bars representing a "stock shelf" / ledger -->
+  <!-- Each bar: rounded ends, ascending heights, implying growth + inventory -->
+  <g transform="translate(48 60)">
+    <!-- bar 1 (short) -->
+    <rect x="0"   y="92" width="120" height="20" rx="10" fill="#FFFFFF" opacity="0.55"/>
+    <!-- bar 2 (medium) -->
+    <rect x="0"   y="62" width="96"  height="20" rx="10" fill="#FFFFFF" opacity="0.75"/>
+    <!-- bar 3 (tall, accent) -->
+    <rect x="0"   y="32" width="72"  height="20" rx="10" fill="#F5B700"/>
+    <!-- bar 4 (tallest, hero) -->
+    <rect x="0"   y="2"  width="48"  height="20" rx="10" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Subtle dot grid (3x3) in top-right corner, hints at SKU/cataloging -->
+  <g fill="#FFFFFF" opacity="0.35">
+    <circle cx="196" cy="68"  r="2.5"/>
+    <circle cx="212" cy="68"  r="2.5"/>
+    <circle cx="196" cy="84"  r="2.5"/>
+    <circle cx="212" cy="84"  r="2.5"/>
+    <circle cx="196" cy="100" r="2.5"/>
+    <circle cx="212" cy="100" r="2.5"/>
+  </g>
+</svg>

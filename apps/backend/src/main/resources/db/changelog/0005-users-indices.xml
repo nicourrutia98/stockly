@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    0005 — Backing indices for the `users` table.
+
+    Indexes:
+        - ix_users_created_at  Audit / admin list views sorted by createdAt.
+        - ix_users_active      Filter by active=true on the admin listing.
+
+    Note: a case-insensitive email index is intentionally NOT created here.
+    Emails are canonicalised to lowercase by the application and the
+    uk_users_email UNIQUE constraint (from 0004) already supports equality
+    lookups. A case-insensitive functional index (LOWER(email)) can be added
+    later if the application stops canonicalising.
+-->
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="0005-users-indices" author="stockly">
+        <comment>Backing indices for users.createdAt and users.active (T6).</comment>
+
+        <createIndex tableName="users" indexName="ix_users_created_at">
+            <column name="created_at"/>
+        </createIndex>
+
+        <createIndex tableName="users" indexName="ix_users_active">
+            <column name="active"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

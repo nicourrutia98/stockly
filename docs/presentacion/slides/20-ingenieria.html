@@ -1,0 +1,115 @@
+<!-- ==================================================================
+     BLOQUE 2 — LA INGENIERÍA  (Luisa Maria Jose Coronel Vargas · ~5 min)
+     ================================================================== -->
+<section class="slide dark">
+  <div class="eyebrow">Bloque 2 de 3 · La ingeniería</div>
+  <div class="answer">
+    <div class="tag">La respuesta primero</div>
+    <p>Tres capas, un contrato de requisitos versionado
+       y ninguna regla de negocio en el cliente.</p>
+  </div>
+  <div class="body" style="padding-top:34px">
+    <div class="three">
+      <div class="card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16)">
+        <span class="k" style="color:var(--accent-500)">01 · Stack real</span>
+        <p style="color:#D8E6F5">Next.js 15 · React 19 · TypeScript <strong style="color:#fff">estricto</strong><br />Spring Boot 3.4 · Java 17 · JPA<br />PostgreSQL 16 · Redis 7 · Liquibase</p>
+      </div>
+      <div class="card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16)">
+        <span class="k" style="color:var(--accent-500)">02 · Contrato</span>
+        <p style="color:#D8E6F5"><strong style="color:#fff">75 requisitos</strong> con identificador estable<br />15 tareas · 5 especificaciones<br />6 migraciones versionadas</p>
+      </div>
+      <div class="card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16)">
+        <span class="k" style="color:var(--accent-500)">03 · Autoridad</span>
+        <p style="color:#D8E6F5">Cada regla se valida <strong style="color:#fff">en el servidor</strong>.<br />Ocultar el botón no es seguridad.</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="blocks"><i></i><i class="on"></i><i></i></span><span class="dot"></span><span class="who">Luisa Maria Jose Coronel Vargas</span><span class="spacer"></span><span class="n">07</span></div>
+  <div class="notes">No es un listado de tecnologías: cada tarjeta responde una decisión. Si preguntan por la elección, decir que cada una está justificada en la documentación con la alternativa descartada y el motivo (docs/02-arquitectura.md §7, 12 decisiones).</div>
+</section>
+
+<section class="slide">
+  <div class="eyebrow">Decisiones que cambiaron el producto</div>
+  <h2>Cuatro decisiones que no son obvias</h2>
+  <div class="body">
+    <div class="two">
+      <ul class="list" style="gap:22px">
+        <li><strong>El SKU es inmutable.</strong> El comercio puede tenerlo impreso en una etiqueta; cambiarlo rompe una referencia que ya existe fuera del sistema.</li>
+        <li><strong>Nada se borra de verdad.</strong> Dar de baja marca <span style="font-family:var(--mono);font-size:.9em">active=false</span>. Una eliminación accidental es reversible.</li>
+      </ul>
+      <ul class="list" style="gap:22px">
+        <li><strong>El token de acceso vive solo en memoria.</strong> El almacenamiento local es legible por cualquier script inyectado: un XSS se vuelve robo de sesión.</li>
+        <li><strong>Los errores son datos.</strong> RFC 7807 con un <span style="font-family:var(--mono);font-size:.9em">type</span> estable. El cliente reacciona al código, nunca al texto.</li>
+      </ul>
+    </div>
+    <p class="lede" style="margin-top:34px;font-size:24px">
+      Cada una tiene una alternativa que se consideró y se descartó por escrito.
+      Sin el motivo escrito, dentro de seis meses nadie recuerda por qué se hizo así.
+    </p>
+  </div>
+  <div class="foot"><span class="blocks"><i></i><i class="on"></i><i></i></span><span class="dot"></span><span class="who">Luisa Maria Jose Coronel Vargas</span><span class="spacer"></span><span class="n">08</span></div>
+  <div class="notes">Estas cuatro son las que el jurado va a preguntar. Para cada una: la alternativa descartada y el coste quePagamos. La del SKU tiene un coste: corregir un SKU mal capturado requiere una operación de soporte específica. Reconocer el coste es lo que hace creíble la decisión.</div>
+</section>
+
+<section class="slide soft">
+  <div class="eyebrow">Sesión y seguridad</div>
+  <h2>Un fallo que costó una sesión legítima</h2>
+  <div class="body">
+    <div class="flow">
+      <div class="step"><span class="n">1</span><p>El acceso expira a los 15 min.<br />Varias peticiones fallan a la vez.</p></div>
+      <div class="step"><span class="n">2</span><p>Cada una dispara su propia renovación con el mismo token.</p></div>
+      <div class="step"><span class="n">3</span><p>El token es de un solo uso: la segunda se lee como <strong>reutilización maliciosa</strong>.</p></div>
+      <div class="step" style="background:var(--primary-500);border-color:var(--primary-500)"><span class="n" style="color:var(--accent-500)">4</span><p style="color:#fff">La familia de tokens queda revocada. <strong style="color:#fff">Sesión legítima muerta.</strong></p></div>
+    </div>
+    <p class="lede" style="margin-top:30px;font-size:25px">
+      La corrección no fue un parche: fue <strong>coalescer las renovaciones</strong> en una sola operación en vuelo.
+      Es un bug que solo aparece cuando el sistema se usa de verdad —y por eso la demostración en vivo importa.
+    </p>
+    <div class="tags" style="display:flex;gap:10px;margin-top:24px">
+      <span class="tag info">acceso 15 min · en memoria</span>
+      <span class="tag info">refresco 7 días · cookie HttpOnly</span>
+      <span class="tag info">rotación de un solo uso</span>
+      <span class="tag ok">reutilizar → 401</span>
+    </div>
+  </div>
+  <div class="foot"><span class="blocks"><i></i><i class="on"></i><i></i></span><span class="dot"></span><span class="who">Luisa Maria Jose Coronel Vargas</span><span class="spacer"></span><span class="n">09</span></div>
+  <div class="notes">Esta es la lámina que demuestra criterio de ingeniería: un fallo de concurrencia con síntoma de seguridad. Explicar que la versión «ingeniosa» sin coalescencia habría sido detectada como ataque y haber matado al usuario legítimo. Si sobra tiempo: mencionar que la revocación se guarda en Redis con TTL igual al del token, para que no crezca sin límite.</div>
+</section>
+
+<section class="slide">
+  <div class="eyebrow">Lo que se construyó</div>
+  <h2>El sistema, medido</h2>
+  <div class="body">
+    <div class="stats">
+      <div class="stat"><div class="v">75</div><div class="l">requisitos catalogados<br />con identificador estable</div></div>
+      <div class="stat"><div class="v">6</div><div class="l">migraciones Liquibase<br />aplicadas y versionadas</div></div>
+      <div class="stat"><div class="v">10</div><div class="l">operaciones de API<br />5 catálogo + 5 sesión</div></div>
+      <div class="stat"><div class="v">2</div><div class="l">idiomas con paridad completa<br />es-CO / en</div></div>
+    </div>
+    <div class="stats" style="margin-top:38px">
+      <div class="stat soft"><div class="v">11</div><div class="l">rutas de la aplicación<br />6 públicas · 5 de panel</div></div>
+      <div class="stat soft"><div class="v">8</div><div class="l">manejadores de error<br />todos en RFC 7807</div></div>
+      <div class="stat soft"><div class="v">12</div><div class="l">decisiones arquitectónicas<br />con alternativa descartada</div></div>
+      <div class="stat soft"><div class="v">6</div><div class="l">indicadores en el panel<br />que declaran su recorte</div></div>
+    </div>
+  </div>
+  <div class="foot"><span class="blocks"><i></i><i class="on"></i><i></i></span><span class="dot"></span><span class="who">Luisa Maria Jose Coronel Vargas</span><span class="spacer"></span><span class="n">10</span></div>
+  <div class="notes">Señalar que 11 rutas = 5 públicas + 6 de panel (la página de alta y la de edición). No leer las ocho cifras: dejarlas y highlight las dos que se explican en voz alta. Advertir al jurado que la honestidad de estas cifras es el tema del bloque 3.</div>
+</section>
+
+<section class="slide dark">
+  <div class="eyebrow">Cierre del bloque 2</div>
+  <div class="answer" style="margin-top:26px">
+    <div class="tag">Lo que acaba de verse</div>
+    <p>El sistema está construido con reglas explícitas,
+       y cada regla tiene un motivo escrito.</p>
+  </div>
+  <div class="body" style="justify-content:center">
+    <p class="lede" style="font-size:29px;max-width:900px">
+      Ahora la parte que más cuesta decir: <strong style="color:#fff">qué está verificado
+      y qué no</strong>. Sigue Ana.
+    </p>
+  </div>
+  <div class="foot"><span class="blocks"><i></i><i class="on"></i><i></i></span><span class="dot"></span><span class="who">Luisa Maria Jose Coronel Vargas</span><span class="spacer"></span><span class="n">11</span></div>
+  <div class="notes">Tránsito. El bloque 3 es el incomodo y hay que anunciarlo con naturalidad, no como disculpa: es la lámina que da credibilidad a todo lo anterior.</div>
+</section>
