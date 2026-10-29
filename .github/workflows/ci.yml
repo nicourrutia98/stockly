@@ -133,6 +133,8 @@ jobs:
           java-version: 17
 
       - uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
       # pnpm es necesario para compilar el paquete compartido: el backend no lo
       # usa, pero el workspace si. Sin este paso 'pnpm build' falla con
@@ -144,8 +146,6 @@ jobs:
       - name: Instalar dependencias
         working-directory: .
         run: pnpm install --frozen-lockfile
-        with:
-          node-version: 20
 
       # El paquete compartido se transpila con tsc y el backend la importa por
       # contratos; ver RK-04 en docs/04-estado-y-brechas.md.
