@@ -144,7 +144,9 @@ export const zProductPageQuery = z.object({
  * `first`/`last` son opcionales: el backend no los serializa; se derivan
  * como `page === 0` y `page >= totalPages - 1` cuando falten. */
 export const zProductPage = z.object({
-  content: z.array(zProduct),
+  // Acotado a 100: ver CVE-2023-54404 (array sin cota) y
+  // spring.data.web.pageable.max-page-size=100 del backend.
+  content: z.array(zProduct).max(100),
   page: z.number().int().min(0),
   size: z.number().int().min(1),
   totalElements: z.number().int().min(0),

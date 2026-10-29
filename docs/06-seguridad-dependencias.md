@@ -99,6 +99,45 @@ vite", dice `PACKAGE_PATH_NOT_EXPORTED`, que no señala la causa.
 
 ## 4. Lo que queda
 
+**`zod@3.25.76` — agotamiento de memoria al validar arrays sin cota (alto, CVE-2023-54404).**
+
+- Ruta: `apps/web → zod@3.25.76` y `packages/shared → zod@3.25.76`
+- `affected_versions: <4.6.6` — el parche está en la rama 4.x; no hay versión 3.x
+  corregida. Lo detecto `pnpm audit` en la primera corrida real del CI.
+- Qué es: `$ZodArray` acumula un issue de validación por cada elemento que
+  falla, sin tope ni terminación temprana. Un array muy grande agota la memoria
+  del proceso que valida (CWE-770, CVSS 4.0: 8.2).
+
+**Por qué no se sube a zod 4 ahora.** La migración es de versión mayor y toca
+dos superficies que no se tocan a la ligera: los contratos compartidos
+(`@stockly/shared` exporta los esquemas que consume el frontend) y el resolver
+de React Hook Form (`@hookform/resolvers` v3 solo habla el API de zod v3).
+Además, el riesgo residual que se acepta es **de cliente**: zod no corre en el
+backend —ese es Java—, así que el array que se valida tiene que llegar de la
+propia API o de la propia consola de quien lo envía. El peor caso es agotar la
+memoria de la pestaña del atacante, no la del servidor.
+
+**Mitigación aplicada.** Los cuatro esquemas con array del paquete compartido
+quedaron acotados, que es justamente lo que el advisory señala como requisito
+para no ser vulnerable:
+
+| Esquema | Cota |
+|---|---|
+| `zCursorPage.items` | 100 (igual que `max-page-size` del backend) |
+| `zProductPage.content` | 100 |
+| `zBatchResult.errors` | 100 |
+| `zProblemDetail.fieldErrors[]` | 20 mensajes por campo |
+
+**Excepción de la compuerta.** `pnpm.auditConfig.ignoreGhsas` en el
+`package.json` raíz ignora **solo** `GHSA-mrhx-c7xc-m3w5`. El gate sigue
+fallando (`--audit-level=high`) ante cualquier otro advisory de nivel alto o
+crítico. El aviso **continúa apareciendo** en la salida de `pnpm audit`: la
+excepción es explícita y documentada, no silenciosa.
+
+**Revisar** al migrar a zod 4, o el día que zod 3 deje de usarse.
+
+---
+
 **`braces@3.0.3` — agotamiento de pila por cadenas anidadas (alto, sin parche).**
 
 - Ruta: `eslint-config-next → @next/eslint-plugin-next → fast-glob → micromatch → braces`

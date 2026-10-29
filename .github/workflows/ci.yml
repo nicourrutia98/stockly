@@ -133,6 +133,17 @@ jobs:
           java-version: 17
 
       - uses: actions/setup-node@v4
+
+      # pnpm es necesario para compilar el paquete compartido: el backend no lo
+      # usa, pero el workspace si. Sin este paso 'pnpm build' falla con
+      # 'pnpm: command not found' (fue lo que rompio la primera corrida).
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
+      - name: Instalar dependencias
+        working-directory: .
+        run: pnpm install --frozen-lockfile
         with:
           node-version: 20
 

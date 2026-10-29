@@ -11,10 +11,15 @@
 
 import { z } from 'zod';
 
-/** Cursor-style pagination envelope (used by event/audit feeds, future use). */
+/** Cursor-style pagination envelope (used by event/audit feeds, future use).
+ *
+ * `items` está acotado a 100 elementos: un array sin cota es el patrón
+ * vulnerable de CVE-2023-54404 (zod acumula un issue de validación por cada
+ * elemento que falla, sin tope ni terminación temprana). El límite coincide
+ * con `spring.data.web.pageable.max-page-size` del backend. */
 export const zCursorPage = <T extends z.ZodTypeAny>(item: T) =>
   z.object({
-    items: z.array(item),
+    items: z.array(item).max(100),
     nextCursor: z.string().nullable(),
     hasMore: z.boolean(),
   });
@@ -30,7 +35,8 @@ export const zBatchResult = z.object({
       code: z.string(),
       message: z.string(),
     }),
-  ),
+    // Acotado a 100: ver CVE-2023-54404 (array sin cota).
+  ).max(100),
 });
 export type BatchResult = z.infer<typeof zBatchResult>;
 

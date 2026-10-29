@@ -21,8 +21,11 @@ export const zProblemDetail = z.object({
   status: z.number().int().min(100).max(599),
   detail: z.string().optional(),
   instance: z.string().optional(),
-  /** Field-level validation errors: field → messages[]. */
-  fieldErrors: z.record(z.string(), z.array(z.string())).optional(),
+  /** Field-level validation errors: field → messages[].
+   *
+   * Acotado a 20 mensajes por campo: un array sin cota es el patrón vulnerable
+   * de CVE-2023-54404 (zod acumula un issue por cada elemento que falla). */
+  fieldErrors: z.record(z.string(), z.array(z.string()).max(20)).optional(),
   /** Correlation id so users can quote it in support tickets. */
   correlationId: z.string().optional(),
   /** Free-form extension bag (Spring renders any unknown property here). */
